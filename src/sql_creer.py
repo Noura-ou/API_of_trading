@@ -39,7 +39,7 @@ cursor.execute("""
 
 # -----------------------------||Create a order table||------------------------------------------------
 cursor.execute("""
-     CREATE TABLE IF NOT EXISTS trade(
+     CREATE TABLE IF NOT EXISTS trading(
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           user_id INTEGER NOT NULL,
           action_id INTEGER NOT NULL,
