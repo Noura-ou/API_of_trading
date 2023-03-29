@@ -17,7 +17,7 @@ cursor.execute("""
        CREATE TABLE IF NOT EXISTS action(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             date TEXT NOT NULL,
-            entreprise TEXT NOT NULL,
+            enterprise TEXT NOT NULL,
             price TEXT NOT NULL
             )
 """)
@@ -46,7 +46,7 @@ cursor.execute("""
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
             action_id INTEGER,
-            date_vente TEXT NOT NULL,
+            sell_date TEXT NOT NULL,
             FOREIGN KEY(user_id) REFERENCES user(id),
             FOREIGN KEY(action_id) REFERENCES action(id)
             )
@@ -57,7 +57,7 @@ cursor.execute("""
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
             action_id INTEGER,
-            date_achat TEXT NOT NULL,
+            buyed_date TEXT NOT NULL,
             FOREIGN KEY(user_id) REFERENCES user(id),
             FOREIGN KEY(action_id) REFERENCES action(id)
             )
