@@ -1,68 +1,56 @@
 import sqlite3
 
-connection = sqlite3.connect("bdd.db")   #Se connecter à la base de données
+connection = sqlite3.connect("bdd.db") # Connect to the database 
 
-cursor = connection.cursor() #SQL.sh pour apprender SQL
+cursor = connection.cursor() # Create a cursor to execute SQL commands
 
+
+# -----------------------------||Create a user table||------------------------------------------------
 cursor.execute(""" 
        CREATE TABLE IF NOT EXISTS user(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT NOT NULL,
-            password TEXT NOT NULL
-            )
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          email TEXT NOT NULL,
+          password TEXT NOT NULL, 
+          token TEXT NOT NULL
+     )
 """)
 
+
+# -----------------------------||Create a follow table||------------------------------------------------
+cursor.execute(""" 
+       CREATE TABLE IF NOT EXISTS follow(
+          follower_id INTEGER NOT NULL,
+          follow_up_id INTEGER NOT NULL,
+          FOREIGN KEY(follower_id) REFERENCES user(id),
+          FOREIGN KEY(follow_up_id) REFERENCES user(id)
+     )
+""")
+
+# -----------------------------||Create a action table||------------------------------------------------
 cursor.execute(""" 
        CREATE TABLE IF NOT EXISTS action(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            date TEXT NOT NULL,
-            enterprise TEXT NOT NULL,
-            price TEXT NOT NULL
-            )
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          enterprise TEXT NOT NULL,
+          price FLOAT NOT NULL
+     )
 """)
 
 
-cursor.execute(""" 
-       CREATE TABLE IF NOT EXISTS following(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            FOREIGN KEY(user_id) REFERENCES user(id)
-            )
+# -----------------------------||Create a order table||------------------------------------------------
+cursor.execute("""
+     CREATE TABLE IF NOT EXISTS trade(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL,
+          action_id INTEGER NOT NULL,
+          buy_price FLOAT NOT NULL,
+          buy_date TEXT,
+          sell_price FLOAT NOT NULL,
+          sell_date TEXT,
+          FOREIGN KEY(user_id) REFERENCES user(id),
+          FOREIGN KEY(action_id) REFERENCES action(id)
+     )              
 """)
-
-cursor.execute(""" 
-       CREATE TABLE IF NOT EXISTS user_actions(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            action_id INTEGER,
-            FOREIGN KEY(user_id) REFERENCES user(id),
-            FOREIGN KEY(action_id) REFERENCES action(id)
-            )
-""")
-
-cursor.execute(""" 
-       CREATE TABLE IF NOT EXISTS sell_order(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            action_id INTEGER,
-            sell_date TEXT NOT NULL,
-            FOREIGN KEY(user_id) REFERENCES user(id),
-            FOREIGN KEY(action_id) REFERENCES action(id)
-            )
-""")
-
-cursor.execute(""" 
-       CREATE TABLE IF NOT EXISTS buyed_order(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            action_id INTEGER,
-            buyed_date TEXT NOT NULL,
-            FOREIGN KEY(user_id) REFERENCES user(id),
-            FOREIGN KEY(action_id) REFERENCES action(id)
-            )
-""")
-
 
 connection.commit()
 connection.close()
