@@ -11,7 +11,10 @@ cursor.execute("""
             email TEXT NOT NULL,
             password TEXT NOT NULL
             )
-
 """)
 
+
+
+
 connection.commit()
+connection.close()
