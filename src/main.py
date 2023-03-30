@@ -34,7 +34,8 @@ class UserLogin(BaseModel):
     
 class Action(BaseModel):
     enterprise: str
-    price: str
+    price: float
+    
 
 # Début des endpoints
 @app.get("/")
@@ -71,10 +72,11 @@ async def login_token(user: UserLogin):
         return {"token": resultat[0]}
 
 
-@app.post("/api/action")
-async def create_action(action : Action):
-   try:
-        create_action(action.enterprise, action.price)
+@app.post("/api/auth/action")
+async def create_action(action: Action, request: Request):
+    try:
+        user_id = request.state.user['id']
+        sql_crud_test.create_action(action.enterprise, action.price, user_id)
         return {"message": "Action created successfully"}
-   except Exception as e:
-        raise HTTPException(status_code=401, detail="l'action n'a pas était crée")
+    except Exception as e:
+        raise HTTPException(status_code=401, detail="l'action n'a pas été créée")

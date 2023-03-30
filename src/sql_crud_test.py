@@ -38,16 +38,16 @@ def update_token(id, token:str)->None:
     connection.close()
 
 # -----------------------------||Create action||------------------------------------------------
-def create_action(enterprise, price):
+def create_action(enterprise, price, user_id):
     connection = sqlite3.connect("bdd.db")
     cursor = connection.cursor()
     cursor.execute("""
-        INSERT INTO action(enterprise, price)
-        VALUES(?,?)
-    """, (enterprise, price))
+        INSERT INTO action(enterprise, price, user_id)
+        VALUES(?,?,?)
+    """, (enterprise, price, user_id))
     connection.commit()
     connection.close()
-    
+
     return cursor.lastrowid
 
 
