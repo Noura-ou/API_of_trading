@@ -1,4 +1,5 @@
 import sqlite3
+import datetime
 
 connection = sqlite3.connect("bdd.db") # Connect to the database 
 
@@ -53,6 +54,26 @@ cursor.execute("""
           FOREIGN KEY(action_id) REFERENCES action(id)
      )              
 """)
+               
+
+def insert_data(data_list):
+    conn = sqlite3.connect('bdd.db')
+    c = conn.cursor()
+    c.executemany('INSERT INTO action VALUES (NULL,?,?,?)', data_list)
+    conn.commit()
+    conn.close()
+
+data_list = [
+    ('IBM', 48552.4, datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")),
+    ('Facebook', 418552.4, datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")),
+    ('Apple', 248552.4, datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")),
+    ('Deloite', 448552.4, datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")),
+    ('Telecom', 4858248552.4, datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")),
+    ('Yeh', 51248552.4, datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")),
+    ('FERG', 418552.4, datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S"))
+]
+insert_data(data_list)
+
 
 connection.commit()
 connection.close()
