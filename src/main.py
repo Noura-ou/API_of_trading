@@ -32,7 +32,11 @@ class UserRegister(BaseModel):
 class UserLogin(BaseModel):
     email:str
     mdp:str
-
+    
+class Action(BaseModel):
+    titre: str
+    contenu: str
+    auteur_id: int
 
 # Début des endpoints
 @app.get("/")
@@ -47,10 +51,10 @@ async def test():
 
 @app.post("/api/auth/inscription")
 async def inscription(user:UserRegister):
-    if len(sql_crud_test.get_users_by_mail(user.email)) > 0:
+    if len(sql_crud_test.get_user_by_email(user.email)) > 0:
         raise HTTPException(status_code=403, detail="L'email fourni possède déjà un compte")
     else:
-        id_user = sql_crud_test.creer_utilisateur(user.nom, user.email, hasher_mdp(user.mdp), None)
+        id_user = sql_crud_test.create_user(user.nom, user.email, hasher_mdp(user.mdp), None)
         token = jwt.encode({
             "email" : user.email,
             "mdp" : user.mdp,
@@ -61,6 +65,11 @@ async def inscription(user:UserRegister):
 
 
 
-@app.get("/api/action")
-async def mes_articles(req: Request):
-   ...
+@app.post("/api/action")
+async def create_action(action : Action):
+   try:
+        create_action(action.titre, action.contenu, action.auteur_id)
+        return {"message": "Action created successfully"}
+   except Exception as e:
+        raise HTTPException(status_code=401, detail="l'action n'a pas était crée")
+

@@ -1,7 +1,7 @@
 import sqlite3
-from sql_creer import connection 
 
 
+connection = sqlite3.connect("bdd.db")
 cursor = connection.cursor()
 
 
@@ -17,7 +17,6 @@ def create_user(name, email, password, token):
     
     return cursor.lastrowid
 
-
 # -----------------------------||Create a search by email||------------------------------------------------
 def get_user_by_email(email):
     cursor.execute("""
@@ -25,6 +24,18 @@ def get_user_by_email(email):
     """, (email,))
     return cursor.fetchone()
 
+# -----------------------------||Update Token||------------------------------------------------
+
+def update_token(id, token:str)->None:
+    connexion = sqlite3.connect("bdd.db")
+    curseur = connexion.cursor()
+    curseur.execute("""
+                    UPDATE utilisateur
+                        SET jwt = ?
+                        WHERE id=?
+                    """,(token, id))
+    connexion.commit()
+    connexion.close()
 
 # -----------------------------||Create action||------------------------------------------------
 def create_action(enterprise, price):
