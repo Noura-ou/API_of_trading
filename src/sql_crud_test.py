@@ -2,12 +2,10 @@ import sqlite3
 from sql_creer import connection 
 
 
-cursor = connection.cursor()
-
-
-
 # -----------------------------||Create a new user||------------------------------------------------
 def create_user(name, email, password, token):
+    connection = sqlite3.connect("bdd.db")
+    cursor = connection.cursor()
     cursor.execute("""
         INSERT INTO user(name, email, password, token)
         VALUES(?,?,?,?)
@@ -20,6 +18,7 @@ def create_user(name, email, password, token):
 
 # -----------------------------||Create a search by email||------------------------------------------------
 def get_user_by_email(email):
+    cursor = connection.cursor()
     cursor.execute("""
         SELECT * FROM user WHERE email = ?
     """, (email,))
@@ -28,6 +27,8 @@ def get_user_by_email(email):
 
 # -----------------------------||Create action||------------------------------------------------
 def create_action(enterprise, price):
+    connection = sqlite3.connect("bdd.db")
+    cursor = connection.cursor()
     cursor.execute("""
         INSERT INTO action(enterprise, price)
         VALUES(?,?)
@@ -40,6 +41,7 @@ def create_action(enterprise, price):
 
 # -----------------------------||Search action by enterprise name||------------------------------------------------
 def get_action_by_enterprise(enterprise):
+    cursor = connection.cursor()
     cursor.execute("""
         SELECT * FROM action WHERE enterprise = ?
     """, (enterprise,))
@@ -48,6 +50,8 @@ def get_action_by_enterprise(enterprise):
 
 # -----------------------------||Follow user||------------------------------------------------
 def follow_user(follower_id, follow_up_id):
+    connection = sqlite3.connect("bdd.db")
+    cursor = connection.cursor()
     cursor.execute("""
         INSERT INTO follow(follower_id, follow_up_id)
         VALUES(?,?)
@@ -61,6 +65,8 @@ def follow_user(follower_id, follow_up_id):
 
 # -----------------------------||Allow trading for user||------------------------------------------------
 def trading_user(user_id, action_id, buy_price, buy_date, sell_price, sell_date):
+    connection = sqlite3.connect("bdd.db")
+    cursor = connection.cursor()
     cursor.execute("""
         INSERT INTO trading(user_id, action_id, buy_price, buy_date, sell_price, sell_date)
         VALUES(?,?,?,?,?,?)
