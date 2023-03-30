@@ -11,6 +11,7 @@ cursor.execute("""
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           name TEXT NOT NULL,
           email TEXT NOT NULL,
+          is_active BOOLEAN NOT NULL,
           password TEXT NOT NULL, 
           token TEXT NOT NULL
      )
@@ -32,7 +33,8 @@ cursor.execute("""
        CREATE TABLE IF NOT EXISTS action(
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           enterprise TEXT NOT NULL,
-          price FLOAT NOT NULL
+          price FLOAT NOT NULL,
+          date TEXT NOT NULL
      )
 """)
 
