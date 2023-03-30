@@ -1,5 +1,5 @@
 import sqlite3
-
+import datetime
 
 # -----------------------------||Create a new user||------------------------------------------------
 def create_user(name, email, password, token):
@@ -38,17 +38,19 @@ def update_token(id, token:str)->None:
     connection.close()
 
 # -----------------------------||Create action||------------------------------------------------
-def create_action(enterprise, price):
+def create_action(enterprise, price, date):
     connection = sqlite3.connect("bdd.db")
     cursor = connection.cursor()
     cursor.execute("""
-        INSERT INTO action(enterprise, price)
-        VALUES(?,?)
-    """, (enterprise, price))
+        INSERT INTO action(enterprise, price, date)
+        VALUES(?,?,?)
+    """, (enterprise, price, date))
     connection.commit()
     connection.close()
     
     return cursor.lastrowid
+
+#create_action('IBM', 41248552.4, datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S"))
 
 
 # -----------------------------||Search action by enterprise name||------------------------------------------------
