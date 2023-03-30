@@ -16,12 +16,12 @@ def create_user(name, email, password, token):
 
 
 # -----------------------------||Create a search by email||------------------------------------------------
-def get_user_by_email(email):
+def get_user_by_email(email, password):
     connection = sqlite3.connect("bdd.db")
     cursor = connection.cursor()
     cursor.execute("""
-        SELECT * FROM user WHERE email = ?
-    """, (email,))
+        SELECT * FROM user WHERE email = ? and password = ?
+    """, (email, password))
     return cursor.fetchall()
 
 # -----------------------------||Update Token||------------------------------------------------

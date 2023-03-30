@@ -63,6 +63,14 @@ async def inscription(user:UserRegister):
         return {"token" : token}
 
 
+@app.post("/api/auth/login")
+async def login_token(user: UserLogin):
+    resultat = sql_crud_test.get_user_by_email(user.email, hasher_mdp(user.password))
+    if resultat is None:
+        raise HTTPException(status_code=401, detail="Login ou mot de passe invalide")
+    else:
+        return {"token": resultat[0]}
+
 
 @app.post("/api/action")
 async def create_action(action : Action):
