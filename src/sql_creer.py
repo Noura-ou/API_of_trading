@@ -13,7 +13,7 @@ cursor.execute("""
           email TEXT NOT NULL,
           is_active BOOLEAN NOT NULL,
           password TEXT NOT NULL, 
-          token TEXT NOT NULL
+          token TEXT
      )
 """)
 

@@ -9,7 +9,7 @@ import os
 
 
 SECRET_KEY = os.getenv('SECRET_KEY')
-ALGORITHM = os.getenv('ALGORITHM')
+ALGORITHM = "HS256"
 
 app = FastAPI()
 
@@ -27,11 +27,11 @@ def verifier_token(req: Request):
 class UserRegister(BaseModel):
     nom:str
     email:str
-    mdp:str
+    password:str
 
 class UserLogin(BaseModel):
     email:str
-    mdp:str
+    password:str
     
 class Action(BaseModel):
     titre: str
@@ -54,10 +54,10 @@ async def inscription(user:UserRegister):
     if len(sql_crud_test.get_user_by_email(user.email)) > 0:
         raise HTTPException(status_code=403, detail="L'email fourni possède déjà un compte")
     else:
-        id_user = sql_crud_test.create_user(user.nom, user.email, hasher_mdp(user.mdp), None)
+        id_user = sql_crud_test.create_user(user.nom, user.email, hasher_mdp(user.password), None)
         token = jwt.encode({
             "email" : user.email,
-            "mdp" : user.mdp,
+            "mdp" : user.password,
             "id" : id_user
         }, SECRET_KEY, algorithm=ALGORITHM)
         sql_crud_test.update_token(id_user, token)
