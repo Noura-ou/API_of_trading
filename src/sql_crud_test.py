@@ -2,7 +2,7 @@ import sqlite3
 
 
 # -----------------------------||Create a new user||------------------------------------------------
-def create_user(name, email, password, token=None):
+def create_user(name, email, password, token):
     connection = sqlite3.connect("bdd.db")
     cursor = connection.cursor()
     cursor.execute("""
@@ -27,15 +27,15 @@ def get_user_by_email(email):
 # -----------------------------||Update Token||------------------------------------------------
 
 def update_token(id, token:str)->None:
-    connexion = sqlite3.connect("bdd.db")
-    curseur = connexion.cursor()
-    curseur.execute("""
-                    UPDATE utilisateur
-                        SET jwt = ?
+    connection = sqlite3.connect("bdd.db")
+    cursor = connection.cursor()
+    cursor.execute("""
+                    UPDATE user
+                        SET token = ?
                         WHERE id=?
                     """,(token, id))
-    connexion.commit()
-    connexion.close()
+    connection.commit()
+    connection.close()
 
 # -----------------------------||Create action||------------------------------------------------
 def create_action(enterprise, price):
