@@ -20,7 +20,7 @@ def get_user_by_email(email, password):
     connection = sqlite3.connect("bdd.db")
     cursor = connection.cursor()
     cursor.execute("""
-        SELECT * FROM user WHERE email = ? and password = ?
+        SELECT * FROM user WHERE email=? AND password=?
     """, (email, password))
     return cursor.fetchall()
 

@@ -49,7 +49,7 @@ async def test():
 
 @app.post("/api/auth/inscription")
 async def inscription(user:UserRegister):
-    if len(sql_crud_test.get_user_by_email(user.email)) > 0:
+    if len(sql_crud_test.get_user_by_email(user.email, user.password)) > 0:
         raise HTTPException(status_code=403, detail="L'email fourni possède déjà un compte")
     else:
         id_user = sql_crud_test.create_user(user.nom, user.email, hasher_mdp(user.password), None)
