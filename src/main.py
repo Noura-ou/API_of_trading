@@ -33,9 +33,8 @@ class UserLogin(BaseModel):
     password:str
     
 class Action(BaseModel):
-    titre: str
-    contenu: str
-    auteur_id: int
+    enterprise: str
+    price: str
 
 # Début des endpoints
 @app.get("/")
@@ -75,7 +74,7 @@ async def login_token(user: UserLogin):
 @app.post("/api/action")
 async def create_action(action : Action):
    try:
-        create_action(action.titre, action.contenu, action.auteur_id)
+        create_action(action.enterprise, action.price)
         return {"message": "Action created successfully"}
    except Exception as e:
         raise HTTPException(status_code=401, detail="l'action n'a pas était crée")
