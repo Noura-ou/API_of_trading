@@ -1,11 +1,12 @@
 from fastapi import FastAPI
+import sqlite3
 import sql_crud_test
 from fastapi import FastAPI, HTTPException, Request, Depends
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
 import hashlib
-
+import datetime
 
 SECRET_KEY="09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
 ALGORITHM = "HS256"
@@ -39,6 +40,15 @@ class Action(BaseModel):
 class Follower(BaseModel):
     follower_id: int
     follow_up_id: int
+
+class Trade(BaseModel):
+    user_id: int
+    action_id: int
+    buy_price: float
+    sell_price: float = None
+    buy_date: str = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+    sell_date: str = None
+
 
 # Début des endpoints
 @app.get("/")
@@ -81,3 +91,32 @@ async def list_action():
     
     liste = [ i for i in range(100) if i%5==0]
     return {"liste des multiples des actions" : liste}
+
+
+@app.post("api/auth/trading/buy")
+def buy(trade: Trade):
+    connection = sqlite3.connect('bdd.db')
+    cursor = connection.cursor()
+    cursor.execute("""
+            INSERT INTO trading (user_id, action_id, buy_date, buy_price, sell_price, sell_date) 
+            VALUES (?, ?, ?, ?, NULL, NULL)""",
+            (trade.user_id, trade.action_id, trade.buy_date, trade.buy_price))
+    connection.commit()
+    connection.close()
+    
+    return {"message": "Transaction réussie."}
+
+
+
+@app.put("api/auth/trading/sell/{trade_id}")
+def sell(trade_id: int, sell_price: float, sell_date: str):
+    connection = sqlite3.connect('bdd.db')
+    cursor = connection.cursor()
+    cursor.execute("""
+            UPDATE trading 
+            SET sell_price = ?, sell_date = ? 
+            WHERE id = ?""", (sell_price, sell_date, trade_id))
+    connection.commit()
+    connection.close()
+    
+    return {"message": f"La transaction {trade_id} à été vendue."}
