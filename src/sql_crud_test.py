@@ -252,15 +252,23 @@ def update_follow(follower_id, follow_up_id):
 
 
 # -----------------------------||Allow trading for user||------------------------------------------------
-def buy_action(user_id, action_id, buy_price, buy_date):
+def buy_action(user_id: int, buy_date: str, action_id: int, buy_price: float, sell_price: float = None, sell_date: str = None):
     connection = sqlite3.connect('bdd.db')
     cursor = connection.cursor()
     cursor.execute("""
-            INSERT INTO trading (user_id, action_id, buy_price, buy_date) 
-            VALUES (?, ?, ?, ?)""", (buy_price, buy_date, user_id, action_id))
+            INSERT INTO trading (user_id, buy_date, action_id, buy_price, sell_price, sell_date) 
+            VALUES (?, ?, ?, ?, ?, ?)""",
+            (user_id, buy_date, action_id, buy_price, sell_price, sell_date))
     connection.commit()
     connection.close()
 
+buy_date = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+buy_action(1, buy_date, 2, 25555, None, None)
+
+
+
+
+#buy_action("1","2",datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S"),25555,None,None)
 
 def sell_action(trading_id, sell_price, sell_date):
     connection = sqlite3.connect('bdd.db')
