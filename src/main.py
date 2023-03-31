@@ -70,4 +70,8 @@ async def login_token(user: UserLogin):
     else:
         return {"token": resultat[0]}
 
-
+@app.get("/api/auth/listAction")
+async def list_action():
+    
+    liste = [ i for i in range(100) if i%5==0]
+    return {"liste des multiples des actions" : liste}
