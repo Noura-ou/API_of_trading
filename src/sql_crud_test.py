@@ -270,12 +270,12 @@ buy_action(1, buy_date, 2, 25555, None, None)
 
 #buy_action("1","2",datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S"),25555,None,None)
 
-def sell_action(trading_id, sell_price, sell_date):
+def sell_action(action_id: int, sell_price: float, sell_date: str):
     connection = sqlite3.connect('bdd.db')
     cursor = connection.cursor()
     cursor.execute("""
             UPDATE trading 
             SET sell_price = ?, sell_date = ? 
-            WHERE id = ?""", (sell_price, sell_date, trading_id))
+            WHERE id = ?""", (sell_price, sell_date, action_id))
     connection.commit()
     connection.close()
