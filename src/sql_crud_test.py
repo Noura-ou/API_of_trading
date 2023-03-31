@@ -47,7 +47,7 @@ def create_action(enterprise, price, date):
     """, (enterprise, price, date))
     connection.commit()
     connection.close()
-    
+
     return cursor.lastrowid
 
 
