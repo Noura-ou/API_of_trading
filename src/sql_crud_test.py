@@ -58,7 +58,7 @@ def get_action_by_enterprise(enterprise):
     cursor.execute("""
         SELECT * FROM action WHERE enterprise = ?
     """, (enterprise,))
-    return cursor.fetchone()
+    return cursor.fetchall()
 
 
 # -----------------------------||Voir la liste des actions disponibles||----------------------------------
@@ -68,11 +68,133 @@ def get_actions():
     cursor.execute("""
         SELECT * FROM action
     """)
-    return cursor.fetchone()
+    return cursor.fetchall()
 
-print(get_actions())
+#print(get_actions())
 
-# -----------------------------||Follow user||------------------------------------------------------------
+
+# -----------------------------||Voir ses actions||----------------------------------
+def voir_mes_actions(user_id):
+    connection = sqlite3.connect("bdd.db")
+    cursor = connection.cursor()
+    cursor.execute("""
+        SELECT * FROM trading WHERE user_id = ?
+    """,(user_id,))
+    return cursor.fetchall()
+
+#print(voir_mes_actions())
+
+# -----------------------------||Voir les actions des personnes que l'on suit||----------------------------------
+
+def voir_actions_follow(follow_up_id):
+    connection = sqlite3.connect("bdd.db")
+    cursor = connection.cursor()
+    cursor.execute(""" 
+        SELECT * FROM trading
+        INNER JOIN user ON trading.user_id = user.id
+        INNER JOIN follow ON user.id = follow.follower_id AND follow.follow_up_id = ?
+    """,(follow_up_id,))
+    return cursor.fetchall()
+
+
+#print(voir_actions_follow(1))
+
+
+# -----------------------------||Changer la valeur d'une action $$$$$||----------------------------------
+def modifie_action(id_action:int, price:float, enterprise:str) -> None :
+        connexion = sqlite3.connect("bdd.db")   #Se connecter à la base de données
+        curseur = connexion.cursor() 
+
+        curseur.execute("""
+            UPDATE action 
+            SET price = ?, enterprise = ?
+            WHERE id = ?
+            """,(price, enterprise, id_action))
+        
+        connexion.commit()
+        connexion.close()
+
+#modifie_action("5", "66666666.6666", "tets")
+
+# -----------------------------||Supprimer une Action $$$$$||----------------------------------
+def supprimer_action(id : int) -> None :
+        connexion = sqlite3.connect("bdd.db")   #Se connecter à la base de données
+        curseur = connexion.cursor() 
+
+        curseur.execute("""
+                 DELETE FROM action 
+                 WHERE id = ?
+                 """,(id,))
+           
+        connexion.commit()
+        connexion.close()
+
+#supprimer_action("7")
+
+# -----------------------------||Supprimer un user $$$$$||----------------------------------
+def supprimer_user(email : str) -> None :
+        connexion = sqlite3.connect("bdd.db")   #Se connecter à la base de données
+        curseur = connexion.cursor() 
+
+        curseur.execute("""
+                 DELETE FROM user 
+                 WHERE email = ?
+                 """,(email,))
+           
+        connexion.commit()
+        connexion.close()
+
+#supprimer_user("gshjddsdk")
+
+
+
+# -----------------------------||Modifier un Utilisateur (Email, JWT, Password) ||----------------------------------
+def modifie_mail_user(id_user : int, email : str) -> None :
+        connexion = sqlite3.connect("bdd.db")   #Se connecter à la base de données
+        curseur = connexion.cursor() 
+
+        curseur.execute("""
+            UPDATE user 
+            SET email = ?
+            WHERE id = ?
+            """,(email, id_user))
+        
+        connexion.commit()
+        connexion.close()
+
+#modifie_mail_user("1", "ami23@gmail.com")
+
+def modifie_jwt_user(id_user : int, token : str) -> None :
+        connexion = sqlite3.connect("bdd.db")   #Se connecter à la base de données
+        curseur = connexion.cursor() 
+
+        curseur.execute("""
+            UPDATE user 
+            SET token = ?
+            WHERE id = ?
+            """,(token, id_user))
+        
+        connexion.commit()
+        connexion.close()
+
+#modifie_jwt_user("1", "")
+
+def modifie_mdp_user(id_user : int, password : str) -> None :
+        connexion = sqlite3.connect("bdd.db")   #Se connecter à la base de données
+        curseur = connexion.cursor() 
+
+        curseur.execute("""
+            UPDATE user 
+            SET password = ?
+            WHERE id = ?
+            """,(password, id_user))
+        
+        connexion.commit()
+        connexion.close()
+
+#modifie_mdp_user("1", "")
+
+# -----------------------------||Follow user||-------------------------------------------------
 def follow_user(follower_id, follow_up_id):
     connection = sqlite3.connect("bdd.db")
     cursor = connection.cursor()
@@ -84,7 +206,6 @@ def follow_user(follower_id, follow_up_id):
     connection.close()
     
     return cursor.lastrowid
-
 
 
 # -----------------------------||Allow trading for user||------------------------------------------------
