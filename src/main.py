@@ -49,7 +49,10 @@ class Trade(BaseModel):
     sell_price: float = None
     buy_date: str = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
     sell_date: str = None
-
+    
+class Sell(BaseModel):
+    action_id: int
+    sell_price: float
 
 # Début des endpoints
 @app.get("/")
@@ -108,26 +111,13 @@ async def follow_user_route(follower_id: int, follow_up_id: int):
 
 @app.post("/api/auth/trading/buy")
 async def buy(trade: Trade):
-    connection = sqlite3.connect('bdd.db')
-    cursor = connection.cursor()
-    cursor.execute("""
-            INSERT INTO trading (user_id, action_id, buy_date, buy_price, sell_price, sell_date) 
-            VALUES (?, ?, ?, ?, NULL, NULL)""",
-            (trade.user_id, trade.action_id, trade.buy_date, trade.buy_price))
-    connection.commit()
-    connection.close()
-    
+    buy_date = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+    sql_crud_test.buy_action(trade.user_id, trade.action_id, buy_date, trade.buy_price, None, None)
     return {"message": "Transaction réussie."}
 
+
 @app.put("/api/auth/trading/sell")
-async def sell(action_id: int, sell_price: float):
+async def sell(sell_data: Sell):
     sell_date = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
-    connection = sqlite3.connect('bdd.db')
-    cursor = connection.cursor()
-    cursor.execute("""
-            UPDATE trading 
-            SET sell_price = ?, sell_date = ? 
-            WHERE id = ?""", (sell_price, sell_date, action_id))
-    connection.commit()
-    
-    return {"message": f"La transaction {action_id} a été vendue."}
+    sql_crud_test.sell_action(sell_data.action_id, sell_data.sell_price, sell_date)
+    return {"message": f"La transaction {sell_data.action_id} a été vendue."}
