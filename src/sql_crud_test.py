@@ -60,6 +60,7 @@ def get_action_by_enterprise(enterprise):
     """, (enterprise,))
     return cursor.fetchall()
 
+#print(get_action_by_enterprise("Facebook"))
 
 # -----------------------------||Voir la liste des actions disponibles||----------------------------------
 def get_actions():
@@ -82,22 +83,22 @@ def voir_mes_actions(user_id):
     """,(user_id,))
     return cursor.fetchall()
 
-#print(voir_mes_actions())
+#print(voir_mes_actions(1))
 
 # -----------------------------||Voir les actions des personnes que l'on suit||----------------------------------
 
-def voir_actions_follow(follow_up_id):
+def voir_actions_follow(id_user):
     connection = sqlite3.connect("bdd.db")
     cursor = connection.cursor()
     cursor.execute(""" 
-        SELECT * FROM trading
+        SELECT trading.user_id,trading.action_id, trading.buy_price, trading.buy_date FROM trading
         INNER JOIN user ON trading.user_id = user.id
         INNER JOIN follow ON user.id = follow.follower_id AND follow.follow_up_id = ?
-    """,(follow_up_id,))
+    """,(id_user,))
     return cursor.fetchall()
 
 
-#print(voir_actions_follow(1))
+print(voir_actions_follow(1))
 
 
 # -----------------------------||Changer la valeur d'une action $$$$$||----------------------------------
@@ -207,6 +208,8 @@ def follow_user(follower_id, follow_up_id):
     
     return cursor.lastrowid
 
+#follow_user(2,1)
+
 
 def read_follower(follower_id):
     connection = sqlite3.connect("bdd.db")
@@ -221,6 +224,7 @@ def read_follower(follower_id):
     
     return result
 
+#print(read_follower(1))
 
 def read_follow_up(follow_up_id):
     connection = sqlite3.connect("bdd.db")
@@ -252,23 +256,22 @@ def update_follow(follower_id, follow_up_id):
 
 
 # -----------------------------||Allow trading for user||------------------------------------------------
-def buy_action(user_id: int, buy_date: str, action_id: int, buy_price: float):
+def buy_action(user_id: int, action_id: int, buy_date: str, buy_price: float, sell_price : float, sell_date : str):
     connection = sqlite3.connect('bdd.db')
     cursor = connection.cursor()
     cursor.execute("""
-            INSERT INTO trading (user_id, buy_date, action_id, buy_price) 
-            VALUES (?, ?, ?, ?, NULL, NULL)""",
-            (user_id, buy_date, action_id, buy_price))
+            INSERT INTO trading (user_id, action_id, buy_date, buy_price,sell_price, sell_date) 
+            VALUES (?,?,?,?,NULL,NULL)""",
+            (user_id, action_id, buy_date, buy_price))
     connection.commit()
     connection.close()
 
-#buy_date = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
-buy_action(1, "buy_date", 2, 25555, None, None)
+
+buy_date = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+
+#buy_action(2, 3, buy_date, 62874.3788,None, None)
 
 
-
-
-#buy_action("1","2",datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S"),25555,None,None)
 
 def sell_action(action_id: int, sell_price: float, sell_date: str):
     connection = sqlite3.connect('bdd.db')
@@ -279,3 +282,5 @@ def sell_action(action_id: int, sell_price: float, sell_date: str):
             WHERE id = ?""", (sell_price, sell_date, action_id))
     connection.commit()
     connection.close()
+
+#sell_action(3,6857.35,datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S"))
