@@ -98,7 +98,7 @@ def voir_actions_follow(id_user):
     return cursor.fetchall()
 
 
-print(voir_actions_follow(1))
+#print(voir_actions_follow(1))
 
 
 # -----------------------------||Changer la valeur d'une action $$$$$||----------------------------------
