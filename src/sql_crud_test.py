@@ -68,9 +68,19 @@ def get_actions():
     cursor.execute("""
         SELECT * FROM action
     """)
-    return cursor.fetchone()
+    return cursor.fetchall()
 
 print(get_actions())
+
+
+def delete_action(action_id):
+    connection = sqlite3.connect('bdd.db')
+    cursor = connection.cursor()
+    cursor.execute("""
+            DELETE FROM action WHERE id = ?""", (action_id,))
+    connection.commit()
+    connection.close()
+
 
 # -----------------------------||Follow user||------------------------------------------------------------
 def follow_user(follower_id, follow_up_id):
@@ -86,16 +96,66 @@ def follow_user(follower_id, follow_up_id):
     return cursor.lastrowid
 
 
-
-# -----------------------------||Allow trading for user||------------------------------------------------
-def trading_user(user_id, action_id, buy_price, buy_date, sell_price, sell_date):
+def read_follower(follower_id):
     connection = sqlite3.connect("bdd.db")
     cursor = connection.cursor()
     cursor.execute("""
-        INSERT INTO trading(user_id, action_id, buy_price, buy_date, sell_price, sell_date)
-        VALUES(?,?,?,?,?,?)
-    """, (user_id, action_id, buy_price, buy_date, sell_price, sell_date))
+        SELECT * FROM follow WHERE follower_id = ?
+        """, (follower_id,))
+    
+    result = cursor.fetchall()   
+
+    connection.close()
+    
+    return result
+
+
+def read_follow_up(follow_up_id):
+    connection = sqlite3.connect("bdd.db")
+    cursor = connection.cursor()
+    cursor.execute("""
+        SELECT * FROM follow WHERE follow_up_id = ?
+        """, (follow_up_id,))
+    
+    result = cursor.fetchall()
+    
+    connection.close()
+    
+    return result
+
+
+def update_follow(follower_id, follow_up_id):
+    connection = sqlite3.connect("bdd.db")
+    cursor = connection.cursor()
+    cursor.execute("""
+        UPDATE follow
+        SET follow_up_id = ?
+        WHERE follower_id = ?
+        """, (follow_up_id, follower_id))
+    
     connection.commit()
     connection.close()
     
     return cursor.lastrowid
+
+
+# -----------------------------||Allow trading for user||------------------------------------------------
+def buy_action(user_id, action_id, buy_price, buy_date):
+    connection = sqlite3.connect('bdd.db')
+    cursor = connection.cursor()
+    cursor.execute("""
+            INSERT INTO trading (user_id, action_id, buy_price, buy_date) 
+            VALUES (?, ?, ?, ?)""", (buy_price, buy_date, user_id, action_id))
+    connection.commit()
+    connection.close()
+
+
+def sell_action(trading_id, sell_price, sell_date):
+    connection = sqlite3.connect('bdd.db')
+    cursor = connection.cursor()
+    cursor.execute("""
+            UPDATE trading 
+            SET sell_price = ?, sell_date = ? 
+            WHERE id = ?""", (sell_price, sell_date, trading_id))
+    connection.commit()
+    connection.close()

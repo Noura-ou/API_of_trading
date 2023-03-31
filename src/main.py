@@ -35,6 +35,10 @@ class UserLogin(BaseModel):
 class Action(BaseModel):
     enterprise: str
     price: float
+    
+class Follower(BaseModel):
+    follower_id: int
+    follow_up_id: int
 
 # Début des endpoints
 @app.get("/")
@@ -69,6 +73,8 @@ async def login_token(user: UserLogin):
         raise HTTPException(status_code=401, detail="Login ou mot de passe invalide")
     else:
         return {"token": resultat[0]}
+
+
 
 @app.get("/api/auth/listAction")
 async def list_action():
