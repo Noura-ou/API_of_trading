@@ -86,12 +86,11 @@ async def login_token(user: UserLogin):
 
 
 
-@app.get("/api/auth/listAction")
-async def list_action():
-    
-    liste = [ i for i in range(100) if i%5==0]
-    return {"liste des multiples des actions" : liste}
 
+@app.get("/api/auth/listAction")
+async def list_action(user_id: int):
+    actions = sql_crud_test.voir_mes_actions(user_id)
+    return [{"action_id": row[1], "quantite": row[2], "prix": row[3],"price": row[4], "price": row[5],"oko": row[6]} for row in actions]
 
 @app.post("api/auth/trading/buy")
 def buy(trade: Trade):
