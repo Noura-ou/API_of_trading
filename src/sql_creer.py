@@ -48,7 +48,7 @@ cursor.execute("""
           action_id INTEGER NOT NULL,
           buy_price FLOAT NOT NULL,
           buy_date TEXT,
-          sell_price FLOAT NOT NULL,
+          sell_price FLOAT,
           sell_date TEXT,
           FOREIGN KEY(user_id) REFERENCES user(id),
           FOREIGN KEY(action_id) REFERENCES action(id)
