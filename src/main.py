@@ -99,7 +99,7 @@ async def list_action(user_id: int):
     return [{ "user_id": row[0], "action_id": row[1],"buy_price": row[2], "buy_date": row[3], "sell_price": row[4] if row[4] is not None else '', "date_price": row[5] if row[5] is not None else ''} for row in actions]
 
 
-@app.put("/api/auth/follow")
+@app.put("/api/auth/followuser")
 async def follow_user_route(follower_id: int, follow_up_id: int):
     sql_crud_test.follow_user(follower_id, follow_up_id)
     return {"message": "Follow added successfully"}

@@ -208,7 +208,7 @@ def follow_user(follower_id, follow_up_id):
     
     return cursor.lastrowid
 
-#follow_user(2,1)
+#follow_user(2,4)
 
 
 def read_follower(follower_id):
@@ -269,8 +269,7 @@ def buy_action(user_id: int, action_id: int, buy_date: str, buy_price: float, se
 
 buy_date = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
 
-#buy_action(2, 3, buy_date, 62874.3788,None, None)
-
+#buy_action(4, 5, buy_date,11115924.3788,None, None)
 
 
 def sell_action(action_id: int, sell_price: float, sell_date: str):
