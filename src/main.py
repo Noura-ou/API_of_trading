@@ -7,6 +7,7 @@ from passlib.context import CryptContext
 from pydantic import BaseModel
 import hashlib
 import datetime
+import secrets
 
 SECRET_KEY="09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
 ALGORITHM = "HS256"
@@ -67,11 +68,7 @@ async def inscription(user:UserRegister):
         raise HTTPException(status_code=403, detail="L'email fourni possède déjà un compte")
     else:
         id_user = sql_crud_test.create_user(user.nom, user.email, hasher_mdp(user.password), None)
-        token = jwt.encode({
-            "email" : user.email,
-            "mdp" : user.password,
-            "id" : id_user
-        }, SECRET_KEY, algorithm=ALGORITHM)
+        token = secrets.token_hex(50)
         sql_crud_test.update_token(id_user, token)
         return {"token" : token}
 
@@ -92,8 +89,8 @@ async def list_action(user_id: int):
     actions = sql_crud_test.voir_mes_actions(user_id)
     return [{"action_id": row[1], "quantite": row[2], "prix": row[3],"price": row[4], "price": row[5],"oko": row[6]} for row in actions]
 
-@app.post("api/auth/trading/buy")
-def buy(trade: Trade):
+@app.post("/api/auth/trading/buy")
+async def buy(trade: Trade):
     connection = sqlite3.connect('bdd.db')
     cursor = connection.cursor()
     cursor.execute("""
@@ -105,17 +102,15 @@ def buy(trade: Trade):
     
     return {"message": "Transaction réussie."}
 
-
-
-@app.put("api/auth/trading/sell/{trade_id}")
-def sell(trade_id: int, sell_price: float, sell_date: str):
+@app.put("/api/auth/trading/sell")
+async def sell(action_id: int, sell_price: float):
+    sell_date = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
     connection = sqlite3.connect('bdd.db')
     cursor = connection.cursor()
     cursor.execute("""
             UPDATE trading 
             SET sell_price = ?, sell_date = ? 
-            WHERE id = ?""", (sell_price, sell_date, trade_id))
+            WHERE id = ?""", (sell_price, sell_date, action_id))
     connection.commit()
-    connection.close()
     
-    return {"message": f"La transaction {trade_id} à été vendue."}
+    return {"message": f"La transaction {action_id} a été vendue."}
