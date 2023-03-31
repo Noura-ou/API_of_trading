@@ -75,7 +75,7 @@ def get_actions():
 
 
 # -----------------------------||Voir ses actions||----------------------------------
-def voir_mes_actions(user_id):
+def voir_mes_actions(user_id :int):
     connection = sqlite3.connect("bdd.db")
     cursor = connection.cursor()
     cursor.execute("""
@@ -83,7 +83,7 @@ def voir_mes_actions(user_id):
     """,(user_id,))
     return cursor.fetchall()
 
-#print(voir_mes_actions(1))
+#print(voir_mes_actions(2))
 
 # -----------------------------||Voir les actions des personnes que l'on suit||----------------------------------
 
@@ -91,7 +91,7 @@ def voir_actions_follow(id_user):
     connection = sqlite3.connect("bdd.db")
     cursor = connection.cursor()
     cursor.execute(""" 
-        SELECT trading.user_id,trading.action_id, trading.buy_price, trading.buy_date FROM trading
+        SELECT trading.user_id,trading.action_id, trading.buy_price, trading.buy_date, trading.sell_price, trading.sell_date FROM trading
         INNER JOIN user ON trading.user_id = user.id
         INNER JOIN follow ON user.id = follow.follower_id AND follow.follow_up_id = ?
     """,(id_user,))

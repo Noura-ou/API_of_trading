@@ -82,12 +82,29 @@ async def login_token(user: UserLogin):
         return {"token": resultat[0]}
 
 
-
-
 @app.get("/api/auth/listAction")
+async def list_action():
+    actions = sql_crud_test.get_actions()
+    return [{ "user_id": row[0], "enterprise": row[1],"price": row[2], "date": row[3]} for row in actions]
+
+
+@app.get("/api/auth/userAction")
 async def list_action(user_id: int):
     actions = sql_crud_test.voir_mes_actions(user_id)
-    return [{"action_id": row[1], "quantite": row[2], "prix": row[3],"price": row[4], "price": row[5],"oko": row[6]} for row in actions]
+    return [{ "user_id": row[1], "action_id": row[2],"buy_price": row[3], "buy_date": row[4],"sell_price": row[5] if row[5] is not None else '', "date_price": row[6] if row[6] is not None else ''} for row in actions]
+
+@app.get("/api/auth/listActionFollow")
+async def list_action(user_id: int):
+    actions = sql_crud_test.voir_actions_follow(user_id)
+    return [{ "user_id": row[0], "action_id": row[1],"buy_price": row[2], "buy_date": row[3], "sell_price": row[4] if row[4] is not None else '', "date_price": row[5] if row[5] is not None else ''} for row in actions]
+
+
+@app.put("/api/auth/follow")
+async def follow_user_route(follower_id: int, follow_up_id: int):
+    sql_crud_test.follow_user(follower_id, follow_up_id)
+    return {"message": "Follow added successfully"}
+
+
 
 @app.post("/api/auth/trading/buy")
 async def buy(trade: Trade):
