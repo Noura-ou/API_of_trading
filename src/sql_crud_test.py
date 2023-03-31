@@ -50,10 +50,8 @@ def create_action(enterprise, price, date):
     
     return cursor.lastrowid
 
-#create_action('IBM', 41248552.4, datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S"))
 
-
-# -----------------------------||Search action by enterprise name||------------------------------------------------
+# -----------------------------||Search action by enterprise name||---------------------------------------
 def get_action_by_enterprise(enterprise):
     connection = sqlite3.connect("bdd.db")
     cursor = connection.cursor()
@@ -63,7 +61,18 @@ def get_action_by_enterprise(enterprise):
     return cursor.fetchone()
 
 
-# -----------------------------||Follow user||------------------------------------------------
+# -----------------------------||Voir la liste des actions disponibles||----------------------------------
+def get_actions():
+    connection = sqlite3.connect("bdd.db")
+    cursor = connection.cursor()
+    cursor.execute("""
+        SELECT * FROM action
+    """)
+    return cursor.fetchone()
+
+print(get_actions())
+
+# -----------------------------||Follow user||------------------------------------------------------------
 def follow_user(follower_id, follow_up_id):
     connection = sqlite3.connect("bdd.db")
     cursor = connection.cursor()
